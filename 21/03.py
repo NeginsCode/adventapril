@@ -33,15 +33,16 @@ def part_one(str_data):
     print(gamma_r*epsilon_r)
 
 
-def part_two():
-    pass
+def part_two(str_data):
+    bin_data = [int(entry, 2) for entry in str_data]
+    o2 =
 
 
 if __name__ == "__main__":
-    test_data = [0b00100, 0b11110, 0b10110, 0b10111, 0b10101, 0b01111, 0b00111, 0b11100, 0b10000, 0b11001, 0b00010,
-                 0b01010]
-    #part_one(test_data)
+    test_data = ["00100", "11110", "10110", "10111", "10101", "01111", "00111", "11100", "10000", "11001", "00010",
+                 "01010"]
+    part_one(test_data)
     d3_data = data.Data(3)
     d3_data.get_preview()
     part_one(d3_data.data_str)
-    part_two()
+    part_two(test_data)
