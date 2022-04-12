@@ -1,30 +1,41 @@
 import data
 
 
+def exponent_det(d):
+    exponent = 0
+    for i in range(5):
+        for j in range(12):
+            if d[i] >= 2**j and j > exponent:
+                exponent = j
+    return exponent
+
+
+def ratio_0_to_1(bdata, exp):
+    count = [0, 0]
+    sep_data = [[], []]
+    mask = 2 ** exp
+    for e in bdata:
+        filtered_e = e & mask
+        if filtered_e > 0b0:
+            count[1] += 1
+            sep_data[1].append(e)
+        else:
+            count[0] += 1
+            sep_data[0].append(e)
+    return count, sep_data
+
+
 def part_one(str_data):
     bin_data = [int(entry, 2) for entry in str_data]
     gamma_r = 0b0
     mask = 0b0
-    count_1 = 0
-    count_0 = 0
     # get exponent
-    exponent = 0
-    for i in range(5):
-        for j in range(12):
-            if bin_data[i] >= 2**j and j > exponent:
-                exponent = j
+    exponent = exponent_det(bin_data)
+
     for e in range(exponent, -1, -1):
-        for entry in bin_data:
-            bit_mask = 2 ** e
-            filtered_entry = entry & bit_mask
-            if filtered_entry > 0b0:
-                count_1 += 1
-            else:
-                count_0 += 1
-        if count_0 < count_1:
+        count, sep_data = ratio_0_to_1(bin_data, e)
+        if count[0] < count[1]:
             gamma_r = 2**e | gamma_r
-        count_0 = 0
-        count_1 = 0
         mask |= 2**e
     epsilon_r = mask ^ gamma_r
 
@@ -35,7 +46,32 @@ def part_one(str_data):
 
 def part_two(str_data):
     bin_data = [int(entry, 2) for entry in str_data]
-    o2 =
+    exponent = exponent_det(bin_data)
+
+    # do O2
+    subset_data = bin_data
+    for e in range(exponent, -1, -1):
+        if len(subset_data) > 1:
+            count, sep_data = ratio_0_to_1(subset_data, e)
+            if count[0] > count[1]:
+                subset_data = sep_data[0]
+            else:
+                subset_data = sep_data[1]
+    o2 = subset_data[0]
+    print(o2)
+
+    # do CO2
+    subset_data = bin_data
+    for e in range(exponent, -1, -1):
+        if len(subset_data) > 1:
+            count, sep_data = ratio_0_to_1(subset_data, e)
+            if count[0] > count[1]:
+                subset_data = sep_data[1]
+            else:
+                subset_data = sep_data[0]
+    co2 = subset_data[0]
+    print(co2)
+    print(o2 * co2)
 
 
 if __name__ == "__main__":
@@ -46,3 +82,5 @@ if __name__ == "__main__":
     d3_data.get_preview()
     part_one(d3_data.data_str)
     part_two(test_data)
+    part_two(d3_data.data_str)
+
